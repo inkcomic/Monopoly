@@ -1,10 +1,10 @@
-var s_HelloWorld = "loading.jpg";
+//var s_HelloWorld = "loading.jpg";
 var s_CloseNormal = "CloseNormal.png";
 var s_CloseSelected = "CloseSelected.png";
 
 var g_resources = [
     //image
-    s_HelloWorld,
+  //  s_HelloWorld,
     s_CloseNormal,
     s_CloseSelected
 
