@@ -12,7 +12,11 @@
     "jsList" : [
         "src/resource.js",
         "src/myApp.js",
-        "src/Preloader.js"
+        "src/Preloader.js",
+		"src/bmob/bmob.js",
+		"src/bmob/bmob-min.js",
+		"src/bmob/bmobSocketIo.js",
+		"src/bmob/bmobSocketIo-min.js"
 
     ]
 }
