@@ -7,7 +7,7 @@ var LoginUI = cc.Layer.extend({
         var widgetSize = this.getContentSize();
         this.btnLogin = new ccui.Button;
         this.btnLogin.setTouchEnabled(true);
-        // textButton->loadTextures("cocosgui/backtotopnormal.png", "cocosgui/backtotoppressed.png", "");
+        this.btnLogin.loadTextures("res/cocosui/backtotopnormal.png","res/cocosui/backtotoppressed.png","");
         this.btnLogin.setTitleText("点击登陆");
         this.btnLogin.x=widgetSize.width/2;
         this.btnLogin.y = widgetSize.height/2;
