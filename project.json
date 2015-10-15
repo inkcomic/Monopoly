@@ -1,7 +1,7 @@
 {
-    "debugMode" : 1,
+    "debugMode" : 0,
     "noCache": false,
-    "showFPS" : true,
+    "showFPS" : false,
     "frameRate" : 60,
     "id" : "gameCanvas",
     "renderMode" : 0,
@@ -13,10 +13,8 @@
         "src/resource.js",
         "src/myApp.js",
         "src/Preloader.js",
-		"src/bmob/bmob.js",
 		"src/bmob/bmob-min.js",
-		"src/bmob/bmobSocketIo.js",
-		"src/bmob/bmobSocketIo-min.js"
-
+		"src/bmob/bmobSocketIo-min.js",
+        "src/Login.js"
     ]
 }

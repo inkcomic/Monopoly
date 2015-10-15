@@ -1,3 +1,4 @@
+var     layers={};
 var MyLayer = cc.Layer.extend({
     helloLabel:null,
     sprite:null,
@@ -46,9 +47,12 @@ var MyLayer = cc.Layer.extend({
     //    this.sprite.setScale(size.height / this.sprite.getContentSize().height);
     //    this.addChild(this.sprite, 0);
 
-        this.PostDailyScore();
+    //   this.PostDailyScore();
         //this.httpGetTest();
         //this.httpPostTest();
+        layers.login_ui = new LoginUI();
+        this.addChild(layers.login_ui);
+
     },
     PostDailyScore:function(){
         var winSize = cc.director.getWinSize();
