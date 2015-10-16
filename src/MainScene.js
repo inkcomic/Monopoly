@@ -1,5 +1,5 @@
 var     layers={};
-var MyLayer = cc.Layer.extend({
+var MainLayer = cc.Layer.extend({
     helloLabel:null,
     sprite:null,
     BAppID:"982ca10ccd64ffdbcfa0c8fe958c5f5d",
@@ -50,9 +50,15 @@ var MyLayer = cc.Layer.extend({
     //   this.PostDailyScore();
         //this.httpGetTest();
         //this.httpPostTest();
-        layers.login_ui = new LoginUI();
-        this.addChild(layers.login_ui);
+        this.setupUI();
 
+    },
+    setupUI:function(){
+        layers.login_ui = new LoginUI();
+
+        layers.regisiter_ui = new RegisiterUI();
+
+        this.addChild(layers.login_ui);
     },
     PostDailyScore:function(){
         var winSize = cc.director.getWinSize();
@@ -149,11 +155,15 @@ var MyLayer = cc.Layer.extend({
 });
 
 
-var MyScene = cc.Scene.extend({
+var MainScene = cc.Scene.extend({
     onEnter:function () {
         this._super();
-        var layer = new MyLayer();
-        this.addChild(layer);
-        layer.init();
+        gMainLayer = new MainLayer();
+        this.addChild(gMainLayer);
+        gMainLayer.init();
     }
 });
+
+
+var gMainLayer=null;
+var gMainScene=null;

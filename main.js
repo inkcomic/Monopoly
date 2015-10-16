@@ -17,7 +17,8 @@ cc.game.onStart = function(){
     //load resources
     Preloader.preload(g_resources, function () {
         Preloader.preload(g_ui, function () {
-            cc.director.runScene(new MyScene());
+            gMainScene = new MainScene();
+            cc.director.runScene(gMainScene);
         },this);
 
     }, this);

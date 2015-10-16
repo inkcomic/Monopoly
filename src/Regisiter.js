@@ -1,18 +1,18 @@
 
-var LoginUI = cc.Layer.extend({
+var RegisiterUI = cc.Layer.extend({
     btnLogin:null,
     labelAccount:null,
     textAccount:null,
     labelPassword:null,
     textPassword:null,
-    btnGoRegisiter:null,
+    btnGoLogin:null,
     ctor : function () {
         this._super();
         var widgetSize = this.getContentSize();
 
         // account label
         this.labelAccount = new ccui.Text();
-        this.labelAccount.string = "账户：";
+        this.labelAccount.string = "注册账户：";
         this.labelAccount.fontSize = 30;
         var xAccount=this.labelAccount.width/2;
         var yAccount=widgetSize.height-this.labelAccount.height;
@@ -37,7 +37,7 @@ var LoginUI = cc.Layer.extend({
 
         // password label
         this.labelPassword = new ccui.Text();
-        this.labelPassword.string = "密码：";
+        this.labelPassword.string = "注册密码：";
         this.labelPassword.fontSize = 30;
         var xPassword=this.labelPassword.width/2;
         var yPassword=yAccount-this.labelPassword.height;
@@ -97,16 +97,16 @@ var LoginUI = cc.Layer.extend({
         this.addChild(this.btnLogin);
 
 
-        //goRegisiter button
-        this.btnGoRegisiter = new ccui.Button;
-        this.btnGoRegisiter.setTouchEnabled(true);
-        this.btnGoRegisiter.loadTextures("res/cocosui/backtotopnormal.png","res/cocosui/backtotoppressed.png","");
-        this.btnGoRegisiter.setTitleText("注册账号");
+        //login button
+        this.btnGoLogin = new ccui.Button;
+        this.btnGoLogin.setTouchEnabled(true);
+        this.btnGoLogin.loadTextures("res/cocosui/backtotopnormal.png","res/cocosui/backtotoppressed.png","");
+        this.btnGoLogin.setTitleText("去登陆");
         var xGoRegisiter=xLogin+150;
         var yGoRegisiter=yLogin;
-        this.btnGoRegisiter.x= xGoRegisiter;
-        this.btnGoRegisiter.y = yGoRegisiter;
-        this.btnGoRegisiter.addTouchEventListener(function (sender, type) {
+        this.btnGoLogin.x= xGoRegisiter;
+        this.btnGoLogin.y = yGoRegisiter;
+        this.btnGoLogin.addTouchEventListener(function (sender, type) {
             switch (type) {
                 case ccui.Widget.TOUCH_BEGAN:
 
@@ -117,9 +117,9 @@ var LoginUI = cc.Layer.extend({
                     break;
 
                 case ccui.Widget.TOUCH_ENDED:
-                    layers.login_ui.removeFromParent();
-                    gMainLayer.addChild(layers.regisiter_ui);
-                   break;
+                    layers.regisiter_ui.removeFromParent();
+                    gMainLayer.addChild(layers.login_ui);
+                    break;
 
                 case ccui.Widget.TOUCH_CANCELED:
                     //   alert("Touch Cancelled");
@@ -129,7 +129,7 @@ var LoginUI = cc.Layer.extend({
                     break;
             }
         }, this);
-        this.addChild(this.btnGoRegisiter);
+        this.addChild(this.btnGoLogin);
     },
     onEnter : function () {
         this._super();
