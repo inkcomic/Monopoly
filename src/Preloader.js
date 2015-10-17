@@ -42,17 +42,19 @@ Preloader = cc.Scene.extend({
      */
     init : function(){
         var self = this;
-        /*
+
         //logo
         var logoWidth = 160;
         var logoHeight = 200;
+        //image move to CCSceneFile.js
+        var fontSize = 24, lblHeight =  -logoHeight / 2 + 100;
+
 
         // bg
         var bgLayer = self._bgLayer = new cc.LayerColor(cc.color(0, 0, 0, 255));
         self.addChild(bgLayer, 0);
+          /*
 
-        //image move to CCSceneFile.js
-        var fontSize = 24, lblHeight =  -logoHeight / 2 + 100;
 
        var _loaderImage = ['res/HD/loading.jpg'];//['image/loading.jpg'];
         if(_loaderImage){
@@ -64,12 +66,12 @@ Preloader = cc.Scene.extend({
             });
             fontSize = 14;
             lblHeight = -logoHeight / 2 - 10;
-        }
+        }*/
         //loading percent
         var label = self._label = new cc.LabelTTF("Loading... 0%", "Arial", fontSize);
         label.setPosition(cc.pAdd(cc.visibleRect.center, cc.p(0, lblHeight)));
         label.setColor(cc.color(255, 255, 255));
-        bgLayer.addChild(this._label, 10);*/
+        bgLayer.addChild(this._label, 10);
         return true;
     },
 
@@ -100,8 +102,8 @@ Preloader = cc.Scene.extend({
      */
     onExit: function () {
         cc.Node.prototype.onExit.call(this);
-       /* var tmpStr = "Loading... 0%";
-        this._label.setString(tmpStr);*/
+        var tmpStr = "Loading... 0%";
+        this._label.setString(tmpStr);
     },
 
     /**
@@ -124,10 +126,10 @@ Preloader = cc.Scene.extend({
         var res = self.resources;
         cc.loader.load(res,
             function (result, count, loadedCount) {
-      /*          var percent = (loadedCount / count * 100) | 0;
+                var percent = (loadedCount / count * 100) | 0;
                 percent = Math.min(percent, 100);
                 self._label.setString("Loading... " + percent + "%");
-                */
+
             }, function () {
                 if (self.cb)
                     self.cb.call(self.target);

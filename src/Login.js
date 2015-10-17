@@ -1,5 +1,6 @@
 
 var LoginUI = cc.Layer.extend({
+    labelTitleName:null,
     btnLogin:null,
     labelAccount:null,
     textAccount:null,
@@ -10,15 +11,29 @@ var LoginUI = cc.Layer.extend({
         this._super();
         var widgetSize = this.getContentSize();
 
+        // Name label
+        this.labelTitleName = new ccui.Text();
+        this.labelTitleName.string = "中国富豪榜";
+        this.labelTitleName.fontSize = 80;
+        var xTitleName = widgetSize.width/2;
+        var yTitleName = widgetSize.height - this.labelTitleName.height;
+        this.labelTitleName.x = xTitleName;
+        this.labelTitleName.y = yTitleName;
+        this.labelTitleName.setTextHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
+        this.labelTitleName.setColor(cc.color.YELLOW);
+        this.addChild(this.labelTitleName);
+        yTitleName -= this.labelTitleName.height;
+
+
         // account label
         this.labelAccount = new ccui.Text();
         this.labelAccount.string = "账户：";
         this.labelAccount.fontSize = 30;
-        var xAccount=this.labelAccount.width/2;
-        var yAccount=widgetSize.height-this.labelAccount.height;
-        this.labelAccount.x=xAccount;
-        this.labelAccount.y=yAccount;
-        xAccount+=this.labelAccount.width/2;
+        var xAccount = this.labelAccount.width/2;
+        var yAccount = yTitleName - this.labelAccount.height;
+        this.labelAccount.x = xAccount;
+        this.labelAccount.y = yAccount;
+        xAccount += this.labelAccount.width/2;
         this.addChild(this.labelAccount);
 
         // account input
@@ -67,6 +82,7 @@ var LoginUI = cc.Layer.extend({
         this.btnLogin.setTouchEnabled(true);
         this.btnLogin.loadTextures("res/cocosui/backtotopnormal.png","res/cocosui/backtotoppressed.png","");
         this.btnLogin.setTitleText("点击登陆");
+        this.btnLogin.setTitleFontSize(22);
         var xLogin=widgetSize.width/2;
         var yLogin=widgetSize.height/2;
         this.btnLogin.x=xLogin;
@@ -82,7 +98,8 @@ var LoginUI = cc.Layer.extend({
                     break;
 
                 case ccui.Widget.TOUCH_ENDED:
-                    alert(this.textAccount.getString()+":"+this.textPassword.getString());
+                    //alert(this.textAccount.getString()+":"+this.textPassword.getString());
+                    this.OnLoginSucess();
                     break;
 
                 case ccui.Widget.TOUCH_CANCELED:
@@ -102,6 +119,7 @@ var LoginUI = cc.Layer.extend({
         this.btnGoRegisiter.setTouchEnabled(true);
         this.btnGoRegisiter.loadTextures("res/cocosui/backtotopnormal.png","res/cocosui/backtotoppressed.png","");
         this.btnGoRegisiter.setTitleText("注册账号");
+        this.btnGoRegisiter.setTitleFontSize(22);
         var xGoRegisiter=xLogin+150;
         var yGoRegisiter=yLogin;
         this.btnGoRegisiter.x= xGoRegisiter;
@@ -117,12 +135,11 @@ var LoginUI = cc.Layer.extend({
                     break;
 
                 case ccui.Widget.TOUCH_ENDED:
-                    layers.login_ui.removeFromParent();
-                    gMainLayer.addChild(layers.regisiter_ui);
+                    gMainLayer.switchToUI(layers.regisiter_ui);
                    break;
 
                 case ccui.Widget.TOUCH_CANCELED:
-                    //   alert("Touch Cancelled");
+
                     break;
 
                 default:
@@ -134,5 +151,8 @@ var LoginUI = cc.Layer.extend({
     onEnter : function () {
         this._super();
 
+    },
+    OnLoginSucess:function(){
+        gMainLayer.switchToUI(layers.maingame_ui);
     }
 });

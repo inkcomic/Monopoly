@@ -67,6 +67,7 @@ var RegisiterUI = cc.Layer.extend({
         this.btnLogin.setTouchEnabled(true);
         this.btnLogin.loadTextures("res/cocosui/backtotopnormal.png","res/cocosui/backtotoppressed.png","");
         this.btnLogin.setTitleText("点击登陆");
+        this.btnLogin.setTitleFontSize(22);
         var xLogin=widgetSize.width/2;
         var yLogin=widgetSize.height/2;
         this.btnLogin.x=xLogin;
@@ -102,6 +103,7 @@ var RegisiterUI = cc.Layer.extend({
         this.btnGoLogin.setTouchEnabled(true);
         this.btnGoLogin.loadTextures("res/cocosui/backtotopnormal.png","res/cocosui/backtotoppressed.png","");
         this.btnGoLogin.setTitleText("去登陆");
+        this.btnGoLogin.setTitleFontSize(22);
         var xGoRegisiter=xLogin+150;
         var yGoRegisiter=yLogin;
         this.btnGoLogin.x= xGoRegisiter;
@@ -117,8 +119,7 @@ var RegisiterUI = cc.Layer.extend({
                     break;
 
                 case ccui.Widget.TOUCH_ENDED:
-                    layers.regisiter_ui.removeFromParent();
-                    gMainLayer.addChild(layers.login_ui);
+                    gMainLayer.switchToUI(layers.login_ui);
                     break;
 
                 case ccui.Widget.TOUCH_CANCELED:

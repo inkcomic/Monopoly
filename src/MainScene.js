@@ -1,4 +1,5 @@
-var     layers={};
+var layers={};
+var currentUI=null;
 var MainLayer = cc.Layer.extend({
     helloLabel:null,
     sprite:null,
@@ -55,10 +56,17 @@ var MainLayer = cc.Layer.extend({
     },
     setupUI:function(){
         layers.login_ui = new LoginUI();
-
         layers.regisiter_ui = new RegisiterUI();
+        layers.maingame_ui = new MainGameUI();
 
-        this.addChild(layers.login_ui);
+        this.switchToUI(layers.login_ui);
+    },
+    switchToUI:function(goToUI){
+        if(currentUI!=null){
+            currentUI.removeFromParent();
+        }
+        currentUI = goToUI;
+        this.addChild(currentUI);
     },
     PostDailyScore:function(){
         var winSize = cc.director.getWinSize();

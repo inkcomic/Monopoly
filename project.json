@@ -16,6 +16,7 @@
 		"src/bmob/bmob-min.js",
 		"src/bmob/bmobSocketIo-min.js",
         "src/Login.js",
-        "src/Regisiter.js"
+        "src/Regisiter.js",
+        "src/MainGame.js"
     ]
 }
