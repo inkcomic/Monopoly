@@ -3,10 +3,10 @@ var currentUI=null;
 var MainLayer = cc.Layer.extend({
     helloLabel:null,
     sprite:null,
-    BAppID:"982ca10ccd64ffdbcfa0c8fe958c5f5d",
-    BRestAPIID:"4355fa7993a2d34b0eb1dba8d2e3c82e",
+    BAppID:"30cafee68a87f5dfbe3630fd072c259b",
+    BRestAPIID:"66e637d0adb45aaee9faf46ee5f13a67",
     init:function () {
-
+        Bmob.initialize(this.BAppID,this.BRestAPIID);
         //////////////////////////////
         // 1. super init first
         this._super();
@@ -53,13 +53,18 @@ var MainLayer = cc.Layer.extend({
         //this.httpPostTest();
         this.setupUI();
 
+        //if already logged in
+        var currentUser = Bmob.User.current();
+        if (currentUser) {
+            this.switchToUI(layers.maingame_ui);
+        } else {
+            this.switchToUI(layers.login_ui);
+        }
     },
     setupUI:function(){
         layers.login_ui = new LoginUI();
         layers.regisiter_ui = new RegisiterUI();
         layers.maingame_ui = new MainGameUI();
-
-        this.switchToUI(layers.login_ui);
     },
     switchToUI:function(goToUI){
         if(currentUI!=null){

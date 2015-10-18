@@ -99,7 +99,7 @@ var LoginUI = cc.Layer.extend({
 
                 case ccui.Widget.TOUCH_ENDED:
                     //alert(this.textAccount.getString()+":"+this.textPassword.getString());
-                    this.OnLoginSucess();
+                    this.DoLogin(this.textAccount.getString(),this.textPassword.getString());
                     break;
 
                 case ccui.Widget.TOUCH_CANCELED:
@@ -152,7 +152,27 @@ var LoginUI = cc.Layer.extend({
         this._super();
 
     },
-    OnLoginSucess:function(){
-        gMainLayer.switchToUI(layers.maingame_ui);
+    DoLogin:function(account,passwd){
+        Bmob.User.logIn(account, passwd, {
+            success: function(user) {
+                gMainLayer.switchToUI(layers.maingame_ui);
+            },
+            error: function(user, error) {
+                switch(error.code){
+                    case 101:
+                        alert("出错啦: "  + "用户名密码不匹配.");
+                        break;
+                    case 109:
+                        alert("出错啦: " +  "检查用户名密码是否为空.");
+                        break;
+                    default:
+                        // Show the error message somewhere and let the user try again.
+                        alert("出错啦: " + error.code + " " + error.message);
+                        break;
+                }
+
+            }
+        });
     }
+
 });
