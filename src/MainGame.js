@@ -21,25 +21,30 @@ var MainGameUI = cc.Layer.extend({
         this._super();
 
     },
-    initBriefProfile:function(){
+    initProfileUI:function(name){
         var widgetSize = this.getContentSize();
         // Create the text button
         this.btnProfileName = new ccui.Button();
         this.btnProfileName.setTouchEnabled(true);
-        this.btnProfileName.setTitleText(ProfileName);
+        this.btnProfileName.setTitleText(name);
+        this.btnProfileName.setColor(cc.color.YELLOW);
         this.btnProfileName.setTitleFontSize(20);
         this.btnProfileName.x = this.btnProfileName.width;
         this.btnProfileName.y = widgetSize.height - this.btnProfileName.height;
         this.addChild(this.btnProfileName);
+    },
+    initBriefProfile:function(){
+
+
 
         //update data
         var ProfileName="";
         var currentUser = Bmob.User.current();
         if (currentUser) {
             ProfileName ="你好:"+ currentUser.get("username");
-            this.btnProfileName.setTitleText(ProfileName);
+            this.initProfileUI(ProfileName);
         } else {
-            this.btnProfileName.setTitleText(ProfileName);
+            this.initProfileUI(ProfileName);
         }
 
 
