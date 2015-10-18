@@ -10,9 +10,19 @@ var RegisiterUI = cc.Layer.extend({
     textEmail:null,
     ctor : function () {
         this._super();
+
+    },
+    onEnter : function () {
+        this._super();
+        this.initUI();
+    },
+    initUI:function(){
         var widgetSize = this.getContentSize();
 
         // account label
+        if(this.labelAccount!=null){
+            this.removeChild(this.labelAccount);this.labelAccount=null;
+        }
         this.labelAccount = new ccui.Text();
         this.labelAccount.string = "注册账户：";
         this.labelAccount.fontSize = 30;
@@ -24,6 +34,9 @@ var RegisiterUI = cc.Layer.extend({
         this.addChild(this.labelAccount);
 
         // account input
+        if(this.textAccount!=null){
+            this.removeChild(this.textAccount);this.textAccount=null;
+        }
         this.textAccount = new ccui.TextField();
         this.textAccount.setMaxLengthEnabled(true);
         this.textAccount.setMaxLength(16);
@@ -38,6 +51,9 @@ var RegisiterUI = cc.Layer.extend({
         this.addChild(this.textAccount);
 
         // password label
+        if(this.labelPassword!=null){
+            this.removeChild(this.labelPassword);this.labelPassword=null;
+        }
         this.labelPassword = new ccui.Text();
         this.labelPassword.string = "注册密码：";
         this.labelPassword.fontSize = 30;
@@ -49,6 +65,9 @@ var RegisiterUI = cc.Layer.extend({
         this.addChild(this.labelPassword);
 
         // password input
+        if(this.textPassword!=null){
+            this.removeChild(this.textPassword);this.textPassword=null;
+        }
         this.textPassword = new ccui.TextField();
         this.textPassword.setPasswordEnabled(true);
         this.textPassword.setPasswordStyleText("*");
@@ -65,6 +84,9 @@ var RegisiterUI = cc.Layer.extend({
         this.addChild(this.textPassword);
 
         // email label
+        if(this.labelEmail!=null){
+            this.removeChild(this.labelEmail);this.labelEmail=null;
+        }
         this.labelEmail = new ccui.Text();
         this.labelEmail.string = "电子邮箱：";
         this.labelEmail.fontSize = 30;
@@ -76,6 +98,9 @@ var RegisiterUI = cc.Layer.extend({
         this.addChild(this.labelEmail);
 
         // email input
+        if(this.textEmail!=null){
+            this.removeChild(this.textEmail);this.textEmail=null;
+        }
         this.textEmail = new ccui.TextField();
         this.textEmail.setMaxLengthEnabled(true);
         this.textEmail.setMaxLength(64);
@@ -91,6 +116,9 @@ var RegisiterUI = cc.Layer.extend({
 
 
         //login button
+        if(this.btnLogin!=null){
+            this.removeChild(this.btnLogin);this.btnLogin=null;
+        }
         this.btnLogin = new ccui.Button;
         this.btnLogin.setTouchEnabled(true);
         this.btnLogin.loadTextures("res/cocosui/backtotopnormal.png","res/cocosui/backtotoppressed.png","");
@@ -122,10 +150,13 @@ var RegisiterUI = cc.Layer.extend({
                     break;
             }
         }, this);
-      //  yLogin-=this.btnLogin.height;
+        //  yLogin-=this.btnLogin.height;
         this.addChild(this.btnLogin);
 
         //regisiter button
+        if(this.btnGoLogin!=null){
+            this.removeChild(this.btnGoLogin);this.btnGoLogin=null;
+        }
         this.btnGoLogin = new ccui.Button;
         this.btnGoLogin.setTouchEnabled(true);
         this.btnGoLogin.loadTextures("res/cocosui/backtotopnormal.png","res/cocosui/backtotoppressed.png","");
@@ -158,10 +189,6 @@ var RegisiterUI = cc.Layer.extend({
             }
         }, this);
         this.addChild(this.btnGoLogin);
-    },
-    onEnter : function () {
-        this._super();
-
     },
     DoRegisiter:function(acount,passwd,email){
         var user = new Bmob.User();
