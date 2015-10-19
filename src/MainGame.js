@@ -5,6 +5,11 @@
 var MainGameUI = cc.Layer.extend({
     btnProfileName:null,
     btnLogout:null,
+	
+	btnLeaderBoard:null,
+	btnEveryQuest:null,
+	btnNearPlayer:null,
+	btnRecharge:null,
     ctor : function () {
         this._super();
         var widgetSize = this.getContentSize();
@@ -21,6 +26,7 @@ var MainGameUI = cc.Layer.extend({
         this._super();
 
         this.initBriefProfile();
+		this.initMainMenu();
     },
 
     initProfileUI:function(name){
@@ -84,7 +90,28 @@ var MainGameUI = cc.Layer.extend({
         var currentUser = Bmob.User.current();  // this will now be null
 
         gMainLayer.switchToUI(layers.login_ui);
-    }
+    },
+	initMainMenu:function(){
+		// everyday button
+        this.btnProfileName = new ccui.Button();
+        this.btnProfileName.setTouchEnabled(true);
+        this.btnProfileName.setTitleText(name);
+        this.btnProfileName.setColor(cc.color.YELLOW);
+        this.btnProfileName.setTitleFontSize(20);
+        this.btnProfileName.x = this.btnProfileName.width;
+        this.btnProfileName.y = widgetSize.height - this.btnProfileName.height;
+        this.addChild(this.btnProfileName);
+		
+		// recharge button
+        this.btnRecharge = new ccui.Button();
+        this.btnRecharge.setTouchEnabled(true);
+        this.btnRecharge.setTitleText(name);
+        this.btnRecharge.setColor(cc.color.YELLOW);
+        this.btnRecharge.setTitleFontSize(20);
+        this.btnRecharge.x = this.btnRecharge.width;
+        this.btnRecharge.y = widgetSize.height - this.btnRecharge.height;
+        this.addChild(this.btnRecharge);
+	}
 
 
 });
