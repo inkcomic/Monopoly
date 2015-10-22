@@ -5,6 +5,11 @@
 var MainGameUI = cc.Layer.extend({
     btnProfileName:null,
     btnLogout:null,
+	
+	btnLeaderBoard:null,
+	btnEveryQuest:null,
+	btnNearPlayer:null,
+	btnRecharge:null,
     ctor : function () {
         this._super();
         var widgetSize = this.getContentSize();
@@ -22,12 +27,11 @@ var MainGameUI = cc.Layer.extend({
 
         this.initBriefProfile();
 
-        this.DoUpdateProfile(function(profileObj){
+        this.DoUpdateProfile(function (profileObj){
             var nick = profileObj.get("nickName");
             alert(nick);
-        },this);
+            }, this);
     },
-
     initProfileUI:function(name){
         var widgetSize = this.getContentSize();
 
@@ -70,8 +74,6 @@ var MainGameUI = cc.Layer.extend({
     },
     initBriefProfile:function(){
 
-
-
         //update data
         var ProfileName="";
         var currentUser = Bmob.User.current();
@@ -90,7 +92,6 @@ var MainGameUI = cc.Layer.extend({
 
         gMainLayer.switchToUI(layers.login_ui);
     },
-
     DoUpdateProfile:function(selector,target){
         var currentUser = Bmob.User.current();
 
