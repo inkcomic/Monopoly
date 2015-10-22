@@ -21,6 +21,11 @@ var MainGameUI = cc.Layer.extend({
         this._super();
 
         this.initBriefProfile();
+
+        this.DoUpdateProfile(function(profileObj){
+            var nick = profileObj.get("nickName");
+            alert(nick);
+        },this);
     },
 
     initProfileUI:function(name){
@@ -84,7 +89,82 @@ var MainGameUI = cc.Layer.extend({
         var currentUser = Bmob.User.current();  // this will now be null
 
         gMainLayer.switchToUI(layers.login_ui);
+    },
+
+    DoUpdateProfile:function(selector,target){
+        var currentUser = Bmob.User.current();
+
+        //call back function
+        var _EventCallback=null;
+        var _EventListener=null;
+        var _EventSelector=null;
+
+        if(target === undefined)
+            _EventCallback = selector;
+        else {
+            _EventSelector = selector;
+            _EventListener = target;
+        }
+
+        if (currentUser) {
+
+            var query = new Bmob.Query(Bmob.User);
+            query.get(currentUser.objectId, {
+                success: function(userAgain) {
+                    var ptrProfile = userAgain.get("profile");
+                    if(null==ptrProfile)
+                    {
+                        //create new profile
+                        var playerProfile = Bmob.Object.extend("PlayerProfile");
+                        var _newProfile = new playerProfile();
+                        //_newProfile.set("score", 137);
+                        _newProfile.save(null, {
+                            success: function(_newProfile) {
+
+                                currentUser.set("profile",_newProfile);
+                                currentUser.save();
+
+                                _newProfile.fetch({
+                                    success: function(post) {
+
+                                        //call update function
+                                        if (_EventCallback)
+                                            _EventCallback(_newProfile);
+                                        if (_EventListener && _EventSelector)
+                                            _EventSelector.call(_EventListener,_newProfile);
+                                    }
+                                });
+                            },
+                            error: function(_newProfile, error) {
+                                // 添加失败
+                                //alert('添加数据失败，返回错误信息：' + error.description);
+                            }
+                        });
+                    }
+                    else
+                    {
+                        ptrProfile.fetch({
+                            success: function(post) {
+
+                                //call update function
+                                if (_EventCallback)
+                                    _EventCallback(post);
+                                if (_EventListener && _EventSelector)
+                                    _EventSelector.call(_EventListener,post);
+                            }
+                        });
+
+
+                    }
+
+
+
+
+
+                }
+            });
+
+        }
+
     }
-
-
 });
