@@ -201,6 +201,10 @@ var RegisiterUI = cc.Layer.extend({
 
         user.signUp(null, {
             success: function(user) {
+                //ensure tables
+                var ensure = new EnsureTables();
+                ensure.ensureAll();
+
                 alert("注册好啦: " + "去登陆吧!");
                 gMainLayer.switchToUI(layers.login_ui);
             },
