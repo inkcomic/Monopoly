@@ -33,6 +33,15 @@ var MainLayer = cc.Layer.extend({
         var currentUser = Bmob.User.current();
         if (currentUser) {
             this.switchToUI(layers.maingame_ui);
+
+            Bmob.Cloud.run('GetProfile', {"uid":currentUser.id}, {
+                success: function(result) {
+                    alert(result);
+                },
+                error: function(error) {
+                }
+            })
+
         } else {
             this.switchToUI(layers.login_ui);
         }
