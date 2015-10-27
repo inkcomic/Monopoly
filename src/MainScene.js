@@ -36,7 +36,8 @@ var MainLayer = cc.Layer.extend({
 
             Bmob.Cloud.run('GetProfile', {"uid":currentUser.id}, {
                 success: function(result) {
-                    alert(result);
+                    var resultObject= JSON.parse(result);
+                    alert(resultObject.results[0].nickName);
                 },
                 error: function(error) {
                 }
