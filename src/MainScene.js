@@ -6,6 +6,8 @@ var MainLayer = cc.Layer.extend({
     BAppID:"30cafee68a87f5dfbe3630fd072c259b",
     BRestAPIID:"66e637d0adb45aaee9faf46ee5f13a67",
     init:function () {
+        var self = this;
+
         Bmob.initialize(this.BAppID,this.BRestAPIID);
 
         this._super();
@@ -14,12 +16,10 @@ var MainLayer = cc.Layer.extend({
 
         this.setupUI();
 
-        //ensure tables
-        var self = this;
-        var ensure = new EnsureTables();
-        ensure.ensureAll(function(){
-            self.autoSwitch();
-        });
+
+
+        self.autoSwitch();
+
 
 
     },
@@ -29,6 +29,7 @@ var MainLayer = cc.Layer.extend({
         layers.maingame_ui = new MainGameUI();
     },
     autoSwitch:function(){
+        var self = this;
         //if already logged in
         var currentUser = Bmob.User.current();
         if (currentUser) {
@@ -37,26 +38,34 @@ var MainLayer = cc.Layer.extend({
 			Bmob.Cloud.run('EnsureAllTables', {"uid":currentUser.id}, {
                 success: function(result) {
                     var resultObject= JSON.parse(result);
-                    alert(resultObject.results[0].nickName);
-					
-					//try get profile data 
-					Bmob.Cloud.run('GetProfile', {"uid":currentUser.id}, {
-						success: function(result) {
-							var resultObject= JSON.parse(result);
-							alert(resultObject.results[0].nickName);
-							
-							this.switchToUI(layers.maingame_ui);
-						},
-						error: function(error) {
-						}
-					});
+                    if(!resultObject.error){
+                        //try get profile data
+                        Bmob.Cloud.run('GetProfile', {"uid":currentUser.id}, {
+                            success: function(result) {
+                                var resultObject= JSON.parse(result);
+                                if(!resultObject.error) {
+                                    alert(resultObject.results[0].nickName);
+
+                                    self.switchToUI(layers.maingame_ui);
+                                }
+                            },
+                            error: function(error) {
+                            }
+                        });
+                    }
+                    else{
+                        alert(resultObject.error);
+                        self.switchToUI(layers.maingame_ui);
+                    }
+
                 },
                 error: function(error) {
                 }
             });
 
         } else {
-            this.switchToUI(layers.login_ui);
+            Bmob.User.logOut();
+            gMainLayer.switchToUI(layers.login_ui);
         }
     },
     switchToUI:function(goToUI){

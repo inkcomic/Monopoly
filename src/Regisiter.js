@@ -201,12 +201,27 @@ var RegisiterUI = cc.Layer.extend({
 
         user.signUp(null, {
             success: function(user) {
-                //ensure tables
-                var ensure = new EnsureTables();
-                ensure.ensureAll();
 
-                alert("注册好啦: " + "去登陆吧!");
-                gMainLayer.switchToUI(layers.login_ui);
+                //try ensure all tables
+                Bmob.Cloud.run('EnsureAllTables', {"uid":user.id}, {
+                    success: function(result) {
+                        var resultObject= JSON.parse(result);
+                        if(!resultObject.error){
+                            alert("注册好啦: " + "去登陆吧!");
+                            gMainLayer.switchToUI(layers.login_ui);
+                        }
+                        else
+                            alert("出错啦: " + resultObject.error);
+                    },
+                    error: function(error) {
+                    }
+                });
+
+                //ensure tables
+                //var ensure = new EnsureTables();
+                //ensure.ensureAll();
+
+
             },
             error: function(user, error) {
                 // Show the error message somewhere and let the user try again.
