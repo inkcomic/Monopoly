@@ -32,16 +32,28 @@ var MainLayer = cc.Layer.extend({
         //if already logged in
         var currentUser = Bmob.User.current();
         if (currentUser) {
-            this.switchToUI(layers.maingame_ui);
-
-            Bmob.Cloud.run('GetProfile', {"uid":currentUser.id}, {
+			
+			//try ensure all tables
+			Bmob.Cloud.run('EnsureAllTables', {"uid":currentUser.id}, {
                 success: function(result) {
                     var resultObject= JSON.parse(result);
                     alert(resultObject.results[0].nickName);
+					
+					//try get profile data 
+					Bmob.Cloud.run('GetProfile', {"uid":currentUser.id}, {
+						success: function(result) {
+							var resultObject= JSON.parse(result);
+							alert(resultObject.results[0].nickName);
+							
+							this.switchToUI(layers.maingame_ui);
+						},
+						error: function(error) {
+						}
+					});
                 },
                 error: function(error) {
                 }
-            })
+            });
 
         } else {
             this.switchToUI(layers.login_ui);
