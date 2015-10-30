@@ -10,6 +10,7 @@ var MainGameUI = cc.Layer.extend({
 	btnEveryQuest:null,
 	btnNearPlayer:null,
 	btnRecharge:null,
+    lableMoney:null,
     ctor : function () {
         this._super();
         var widgetSize = this.getContentSize();
@@ -32,11 +33,11 @@ var MainGameUI = cc.Layer.extend({
             if(nick)
             {
                 var ProfileName ="<" + nick + ">";
-                this.initProfileUI(ProfileName);
+                this.initProfileUI(ProfileName,profileObj.get("money"));
             }
         }, this);
     },
-    initProfileUI:function(name){
+    initProfileUI:function(name,money){
         var widgetSize = this.getContentSize();
 
 
@@ -49,7 +50,7 @@ var MainGameUI = cc.Layer.extend({
         this.btnProfileName.setTouchEnabled(true);
         this.btnProfileName.setTitleText(name);
         this.btnProfileName.setColor(cc.color.YELLOW);
-        this.btnProfileName.setTitleFontSize(20);
+        this.btnProfileName.setTitleFontSize(24);
         this.btnProfileName.x = this.btnProfileName.width;
         this.btnProfileName.y = widgetSize.height - this.btnProfileName.height;
         this.addChild(this.btnProfileName);
@@ -65,7 +66,7 @@ var MainGameUI = cc.Layer.extend({
         this.btnLogout.setTitleText("登出");
         this.btnLogout.setColor(cc.color.YELLOW);
         this.btnLogout.setTitleFontSize(20);
-        this.btnLogout.x = this.btnProfileName.x + this.btnProfileName.width + this.btnLogout.width;
+        this.btnLogout.x = this.btnProfileName.x +200+ this.btnProfileName.width + this.btnLogout.width;
         this.btnLogout.y = widgetSize.height - this.btnLogout.height;
         this.btnLogout.addTouchEventListener(function (sender, type) {
             switch (type) {
@@ -75,6 +76,22 @@ var MainGameUI = cc.Layer.extend({
             }
         }, this);
         this.addChild(this.btnLogout);
+
+        // lableMoney label
+        if(this.lableMoney!=null){
+            this.removeChild(this.lableMoney);this.lableMoney=null;
+        }
+        this.lableMoney = new ccui.Text();
+        this.lableMoney.string = "金币：" + money;
+        this.lableMoney.setColor(cc.color.YELLOW);
+        this.lableMoney.fontSize = 18;
+        var xAccount = this.lableMoney.width/2;
+        var yAccount = this.btnLogout.y - this.lableMoney.height;
+        this.lableMoney.x = xAccount;
+        this.lableMoney.y = yAccount;
+        xAccount += this.lableMoney.width/2;
+        this.addChild(this.lableMoney);
+
     },
     initBriefProfile:function(){
 
@@ -83,9 +100,9 @@ var MainGameUI = cc.Layer.extend({
         var currentUser = Bmob.User.current();
         if (currentUser) {
             ProfileName ="你好:"+ currentUser.get("username");
-            this.initProfileUI(ProfileName);
+            this.initProfileUI(ProfileName,0);
         } else {
-            this.initProfileUI(ProfileName);
+            this.initProfileUI(ProfileName,0);
         }
 
 

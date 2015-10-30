@@ -44,7 +44,7 @@ var MainLayer = cc.Layer.extend({
                             success: function(result) {
                                 var resultObject= JSON.parse(result);
                                 if(!resultObject.error) {
-                                    alert(resultObject.results[0].nickName);
+                                  //  alert(resultObject.results[0].nickName);
 
                                     self.switchToUI(layers.maingame_ui);
                                 }
