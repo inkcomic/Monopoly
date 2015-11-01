@@ -2,6 +2,32 @@
  * Created by bin on 2015/10/18.
  */
 
+//返回今天开始/结束时间
+function getNowFormatDate(isBegin) {
+    var date = new Date();
+    var seperator1 = "-";
+    var seperator2 = ":";
+    var month = date.getMonth() + 1;
+    var strDate = date.getDate();
+    if (month >= 1 && month <= 9) {
+        month = "0" + month;
+    }
+    if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+    }
+    var timePart ;
+    if(isBegin) {
+        timePart = "00:00:00";
+    }
+    else {
+        timePart = "23:59:59";
+    }
+
+    var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+        + " " + timePart;
+    return currentdate;
+}
+
 var MainGameUI = cc.Layer.extend({
     btnProfileName:null,
     btnLogout:null,
@@ -10,7 +36,8 @@ var MainGameUI = cc.Layer.extend({
 	btnEveryQuest:null,
 	btnNearPlayer:null,
 	btnRecharge:null,
-    lableMoney:null,
+    labelMoney:null,
+    btnEverySign:null,
     ctor : function () {
         this._super();
         var widgetSize = this.getContentSize();
@@ -29,15 +56,20 @@ var MainGameUI = cc.Layer.extend({
         this.initBriefProfile();
 
         this.DoUpdateProfile(function (profileObj){
-            var nick = profileObj.get("nickName");
-            if(nick)
-            {
-                var ProfileName ="<" + nick + ">";
-                this.initProfileUI(ProfileName,profileObj.get("money"));
-            }
+
+            this.initProfileUI();
+
         }, this);
     },
-    initProfileUI:function(name,money){
+    initProfileUI:function(){
+        var nick = gGameData.profileInfo.nickName;
+        var money = gGameData.profileInfo.money;
+        var lastEverydaySign = new Date(gGameData.profileInfo.lastEverydaySign.iso.toString());
+
+        if(!nick||!money||!lastEverydaySign)
+            return;
+        var name= "<" + nick + ">";
+
         var widgetSize = this.getContentSize();
 
 
@@ -78,19 +110,56 @@ var MainGameUI = cc.Layer.extend({
         this.addChild(this.btnLogout);
 
         // lableMoney label
-        if(this.lableMoney!=null){
-            this.removeChild(this.lableMoney);this.lableMoney=null;
+        if(this.labelMoney!=null){
+            this.removeChild(this.labelMoney);this.labelMoney=null;
         }
-        this.lableMoney = new ccui.Text();
-        this.lableMoney.string = "金币：" + money;
-        this.lableMoney.setColor(cc.color.YELLOW);
-        this.lableMoney.fontSize = 18;
-        var xAccount = this.lableMoney.width/2;
-        var yAccount = this.btnLogout.y - this.lableMoney.height;
-        this.lableMoney.x = xAccount;
-        this.lableMoney.y = yAccount;
-        xAccount += this.lableMoney.width/2;
-        this.addChild(this.lableMoney);
+        this.labelMoney = new ccui.Text();
+        this.labelMoney.string = "金币：" + money;
+        this.labelMoney.setColor(cc.color.YELLOW);
+        this.labelMoney.fontSize = 18;
+        var xAccount = this.labelMoney.width/2;
+        var yAccount = this.btnLogout.y - this.labelMoney.height;
+        this.labelMoney.x = xAccount;
+        this.labelMoney.y = yAccount;
+        xAccount += this.labelMoney.width/2;
+        this.addChild(this.labelMoney);
+
+
+        //check Signed Status
+        var dateTodayBeginSecond = (new Date(getNowFormatDate(true))).getTime();
+        var dateTodayEndSecond = (new Date(getNowFormatDate(false))).getTime();
+        var lastSignDateSecond = lastEverydaySign.getTime();
+        var isSigned = false;
+        if((dateTodayBeginSecond <= lastSignDateSecond) &&
+            (dateTodayEndSecond >= lastSignDateSecond))
+            isSigned = true;
+        else
+            isSigned = false;
+
+        if(this.btnEverySign!=null){
+            this.removeChild(this.btnEverySign);
+            this.btnEverySign=null;
+        }
+        // Create the profile button
+        this.btnEverySign = new ccui.Button();
+        this.btnEverySign.setBright(!isSigned);
+        this.btnEverySign.setEnabled(!isSigned);
+        this.btnEverySign.setTouchEnabled(!isSigned);
+        this.btnEverySign.setTitleText("每日签到");
+        this.btnEverySign.setColor(isSigned?cc.color.GRAY:cc.color.YELLOW);
+        this.btnEverySign.setTitleFontSize(20);
+        this.btnEverySign.x = this.btnProfileName.x +100+ this.btnProfileName.width + this.btnEverySign.width;
+        this.btnEverySign.y = widgetSize.height - this.btnEverySign.height;
+        this.btnEverySign.addTouchEventListener(function (sender, type) {
+            switch (type) {
+                case ccui.Widget.TOUCH_ENDED:
+                    this.DoEveryDaySign();
+                    break;
+            }
+        }, this);
+        this.addChild(this.btnEverySign);
+
+
 
     },
     initBriefProfile:function(){
@@ -113,6 +182,22 @@ var MainGameUI = cc.Layer.extend({
 
         gMainLayer.switchToUI(layers.login_ui);
     },
+    DoEveryDaySign:function(){
+        var self = this;
+        var currentUser = Bmob.User.current();  // this will now be null
+        Bmob.Cloud.run('EveryDaySign', {"uid":currentUser.id}, {
+            success: function(result) {
+                var resultObject= JSON.parse(result);
+                if(!resultObject.error) {
+                    //update profile info /profile UI
+                    gGameData.setProfileInfo(resultObject.results);
+                    self.initProfileUI();
+                }
+            },
+            error: function(error) {
+            }
+        });
+    },
     DoUpdateProfile:function(selector,target){
         var currentUser = Bmob.User.current();
 
@@ -129,25 +214,21 @@ var MainGameUI = cc.Layer.extend({
         }
 
         if (currentUser) {
-            var query = new Bmob.Query(Bmob.User);
-            query.include("profile");
+            Bmob.Cloud.run('GetProfile', {"uid":currentUser.id}, {
+                success: function(result) {
+                    var resultObject= JSON.parse(result);
+                    if(!resultObject.error) {
+                        gGameData.setProfileInfo(resultObject.results[0]);
 
-            query.get(currentUser.id, {
-                success: function(userAgain) {
-                    var ptrProfile = userAgain.get("profile");
-                    var ptrProfileId = ptrProfile.id;
-
-                    if(ptrProfileId)
-                    {
-                        //call update function
                         if (_EventCallback)
-                            _EventCallback(ptrProfile);
+                            _EventCallback(resultObject.results[0]);
                         if (_EventListener && _EventSelector)
-                            _EventSelector.call(_EventListener,ptrProfile);
+                            _EventSelector.call(_EventListener,resultObject.results[0]);
                     }
+                },
+                error: function(error) {
                 }
             });
-
 
 
         }

@@ -45,7 +45,7 @@ var MainLayer = cc.Layer.extend({
                                 var resultObject= JSON.parse(result);
                                 if(!resultObject.error) {
                                   //  alert(resultObject.results[0].nickName);
-
+                                    gGameData.setProfileInfo(resultObject.results[0]);
                                     self.switchToUI(layers.maingame_ui);
                                 }
                             },
@@ -173,6 +173,7 @@ var MainLayer = cc.Layer.extend({
 var MainScene = cc.Scene.extend({
     onEnter:function () {
         this._super();
+        gGameData = new GameData();
         gMainLayer = new MainLayer();
         this.addChild(gMainLayer);
         gMainLayer.init();
@@ -182,3 +183,4 @@ var MainScene = cc.Scene.extend({
 
 var gMainLayer=null;
 var gMainScene=null;
+var gGameData=null;
