@@ -64,7 +64,7 @@ var MainGameUI = cc.Layer.extend({
     initProfileUI:function(){
         var nick = gGameData.profileInfo.nickName;
         var money = gGameData.profileInfo.money;
-        var lastEverydaySign = new Date(gGameData.profileInfo.lastEverydaySign);
+        var lastEverydaySign = new Date(gGameData.profileInfo.lastEverydaySign.iso);
 
         if(!nick||!money||!lastEverydaySign)
             return;
