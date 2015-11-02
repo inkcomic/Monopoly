@@ -173,6 +173,7 @@ var MainLayer = cc.Layer.extend({
 var MainScene = cc.Scene.extend({
     onEnter:function () {
         this._super();
+        gPopDialogMgr = new PopDialogMgr();
         gGameData = new GameData();
         gMainLayer = new MainLayer();
         this.addChild(gMainLayer);
@@ -184,3 +185,5 @@ var MainScene = cc.Scene.extend({
 var gMainLayer=null;
 var gMainScene=null;
 var gGameData=null;
+
+var gPopDialogMgr = null;
