@@ -66,7 +66,7 @@ var MainGameUI = cc.Layer.extend({
         var money = gGameData.profileInfo.money;
         var lastEverydaySign = new Date(gGameData.profileInfo.lastEverydaySign.iso);
 
-        if(!nick||!money||!lastEverydaySign)
+        if(nick==null||money==null||lastEverydaySign==null)
             return;
         var name= "<" + nick + ">";
 
@@ -159,8 +159,6 @@ var MainGameUI = cc.Layer.extend({
         }, this);
         this.addChild(this.btnEverySign);
 
-
-
     },
     initBriefProfile:function(){
 
@@ -185,13 +183,21 @@ var MainGameUI = cc.Layer.extend({
     DoEveryDaySign:function(){
         var self = this;
         var currentUser = Bmob.User.current();  // this will now be null
+        var oldMoney = gGameData.profileInfo.money;
         Bmob.Cloud.run('EveryDaySign', {"uid":currentUser.id}, {
             success: function(result) {
                 var resultObject= JSON.parse(result);
                 if(!resultObject.error) {
                     //update profile info /profile UI
-                    gGameData.setProfileInfo(resultObject.results);
-                    self.initProfileUI();
+                    gGameData.setProfileInfo(resultObject.results[0]);
+
+
+                    var getMoney = gGameData.profileInfo.money -oldMoney;
+                    gPopDialogMgr.DoOkDlg(self,"恭喜你获得("+getMoney+")金币","确定",function(){
+
+                            self.initProfileUI();
+                        }
+                    );
                 }
             },
             error: function(error) {
