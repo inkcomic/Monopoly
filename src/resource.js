@@ -73,3 +73,27 @@ var g_ui = [
  //   s_s9s_blocks9_plist,*/
     "res/cocosui/CloseSelected.png"
 ];
+
+
+var g_opengl_resources = [
+    //preload shader source
+    "res/Shaders/example_Outline.fsh",
+    "res/Shaders/example_Outline.vsh",
+    "res/Shaders/example_Blur.fsh",
+    "res/Shaders/example_ColorBars.fsh",
+    "res/Shaders/example_ColorBars.vsh",
+    "res/Shaders/example_Flower.fsh",
+    "res/Shaders/example_Flower.vsh",
+    "res/Shaders/example_Heart.fsh",
+    "res/Shaders/example_Heart.vsh",
+    "res/Shaders/example_Julia.fsh",
+    "res/Shaders/example_Julia.vsh",
+    "res/Shaders/example_Mandelbrot.fsh",
+    "res/Shaders/example_Mandelbrot.vsh",
+    "res/Shaders/example_Monjori.fsh",
+    "res/Shaders/example_Monjori.vsh",
+    "res/Shaders/example_Plasma.fsh",
+    "res/Shaders/example_Plasma.vsh",
+    "res/Shaders/example_Twist.fsh",
+    "res/Shaders/example_Twist.vsh"
+];
