@@ -38,6 +38,7 @@ var MainGameUI = cc.Layer.extend({
 	btnRecharge:null,
     labelMoney:null,
     btnEverySign:null,
+    btnBigRecharge:null,
     ctor : function () {
         this._super();
         var widgetSize = this.getContentSize();
@@ -159,6 +160,29 @@ var MainGameUI = cc.Layer.extend({
         }, this);
         this.addChild(this.btnEverySign);
 
+        //recharge
+        if(this.btnBigRecharge!=null){
+            this.removeChild(this.btnBigRecharge);
+            this.btnBigRecharge=null;
+        }
+        // Create the profile button
+        this.btnBigRecharge = new ccui.Button();
+        this.btnBigRecharge.setBright(true);
+        this.btnBigRecharge.setEnabled(true);
+        this.btnBigRecharge.setTouchEnabled(true);
+        this.btnBigRecharge.setTitleText("充值");
+        this.btnBigRecharge.setColor(cc.color.YELLOW);
+        this.btnBigRecharge.setTitleFontSize(180);
+        this.btnBigRecharge.x = widgetSize.width/2;
+        this.btnBigRecharge.y = widgetSize.height/2 - this.btnBigRecharge.height;
+        this.btnBigRecharge.addTouchEventListener(function (sender, type) {
+            switch (type) {
+                case ccui.Widget.TOUCH_ENDED:
+                        this.DoBuyGold();
+                    break;
+            }
+        }, this);
+        this.addChild(this.btnBigRecharge);
     },
     initBriefProfile:function(){
 
@@ -196,6 +220,41 @@ var MainGameUI = cc.Layer.extend({
                     gPopDialogMgr.DoOkDlg(self,"恭喜你获得("+getMoney+")金币","确定",function(){
 
                             self.initProfileUI();
+                        }
+                    );
+                }
+            },
+            error: function(error) {
+            }
+        });
+    },
+    DoBuyGold:function(){
+        var self = this;
+
+        //disable buy
+        self.btnBigRecharge.setBright(false);
+        self.btnBigRecharge.setEnabled(false);
+        self.btnBigRecharge.setTouchEnabled(false);
+        self.btnBigRecharge.setColor(cc.color.GRAY);
+
+        var currentUser = Bmob.User.current();  // this will now be null
+        var oldMoney = gGameData.profileInfo.money;
+        Bmob.Cloud.run('BuyGold', {"uid":currentUser.id,"goldAmount":1}, {
+            success: function(result) {
+                var resultObject= JSON.parse(result);
+                if(!resultObject.error) {
+                    //update profile info /profile UI
+                    gGameData.setProfileInfo(resultObject.results[0]);
+
+                    var getMoney = gGameData.profileInfo.money - oldMoney;
+                    gPopDialogMgr.DoOkDlg(self,"恭喜你购买获得("+getMoney+")金币","确定",function(){
+                            self.initProfileUI();
+
+                            //disable buy
+                            self.btnBigRecharge.setBright(true);
+                            self.btnBigRecharge.setEnabled(true);
+                            self.btnBigRecharge.setTouchEnabled(true);
+                            self.btnBigRecharge.setColor(cc.color.YELLOW);
                         }
                     );
                 }

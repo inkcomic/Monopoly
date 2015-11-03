@@ -113,9 +113,9 @@ var OKDialog = BlurLayer.extend({
         this.btnOK.setTouchEnabled(true);
         this.btnOK.setTitleText(_okText);
         this.btnOK.setColor(cc.color.YELLOW);
-        this.btnOK.setTitleFontSize(24);
+        this.btnOK.setTitleFontSize(26);
         this.btnOK.x = widgetSize.width/2;
-        this.btnOK.y = yAccount - this.btnOK.height;
+        this.btnOK.y = yAccount - this.btnOK.height-20;
         this.btnOK.addTouchEventListener(function (sender, type) {
             switch (type) {
                 case ccui.Widget.TOUCH_ENDED:
