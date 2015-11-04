@@ -2,100 +2,115 @@
  * Created by bin on 2015/11/2.
  */
 
+var OpenGLTestLayer = cc.Layer.extend({
+    _grossini:null,
+    _tamara:null,
+    _kathia:null,
+    _code:null,
 
-cc.GLNode = cc.GLNode || cc.Node.extend({
-    ctor:function(){
-        this._super();
-        this.init();
+    ctor:function() {
+        this._super(cc.color(0,0,0,255), cc.color(98,99,117,255) );
     },
-    init:function(){
-        this._renderCmd._needDraw = true;
-        this._renderCmd.rendering =  function(ctx){
-            cc.kmGLMatrixMode(cc.KM_GL_MODELVIEW);
-            cc.kmGLPushMatrix();
-            cc.kmGLLoadMatrix(this._stackMatrix);
 
-            this._node.draw(ctx);
-
-            cc.kmGLPopMatrix();
-        };
+    title:function () {
+        return "OpenGLTest";
     },
-    draw:function(ctx){
-        this._super(ctx);
+    subtitle:function () {
+        return "";
+    },
+    onBackCallback:function (sender) {
+        var s = new OpenGLTestScene();
+        s.addChild(previousOpenGLTest());
+        director.runScene(s);
+    },
+    onRestartCallback:function (sender) {
+        var s = new OpenGLTestScene();
+        s.addChild(restartOpenGLTest());
+        director.runScene(s);
+    },
+    onNextCallback:function (sender) {
+        var s = new OpenGLTestScene();
+        s.addChild(nextOpenGLTest());
+        director.runScene(s);
+    },
+
+    // automation
+    numberOfPendingTests:function() {
+        return ( (arrayOfOpenGLTest.length-1) - OpenGLTestIdx );
+    },
+
+    getTestNumber:function() {
+        return OpenGLTestIdx;
     }
 });
-//------------------------------------------------------------------
-//
-// ShaderNode
-//
-//------------------------------------------------------------------
-var ShaderNode = cc.GLNode.extend({
-    ctor:function(vertexShader, framentShader) {
+
+var ShaderOutlineEffect = OpenGLTestLayer.extend({
+    ctor:function() {
         this._super();
-        this.init();
-
+        var widgetSize = this.getContentSize();;
         if( 'opengl' in cc.sys.capabilities ) {
-            this.width = 255;
-            this.height = 255;
-            this.anchorX = 0.5;
-            this.anchorY = 0.5;
+            if(cc.sys.isNative){
+                this.shader = new cc.GLProgram("res/Shaders/example_Outline_noMVP.vsh", "res/Shaders/example_Outline.fsh");
+                this.shader.link();
+                this.shader.updateUniforms();
+            }
+            else{
+                this.shader = new cc.GLProgram("res/Shaders/example_Outline.vsh", "res/Shaders/example_Outline.fsh");
+                this.shader.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
+                this.shader.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
+                this.shader.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
 
-            this.shader = cc.GLProgram.create(vertexShader, framentShader);
-            this.shader.retain();
-            this.shader.addAttribute("aVertex", cc.VERTEX_ATTRIB_POSITION);
-            this.shader.link();
-            this.shader.updateUniforms();
+                this.shader.link();
+                this.shader.updateUniforms();
+                this.shader.use();
+                this.shader.setUniformLocationWith1f(this.shader.getUniformLocationForName('u_threshold'), 1.75);
+                this.shader.setUniformLocationWith3f(this.shader.getUniformLocationForName('u_outlineColor'), 0 / 255, 255 / 255, 0 / 255);
+            }
 
-            var program = this.shader.getProgram();
-            this.uniformCenter = gl.getUniformLocation( program, "center");
-            this.uniformResolution = gl.getUniformLocation( program, "resolution");
-            this.initBuffers();
+            this.sprite = new cc.Sprite('res/cocosui/grossini-aliases.png');
+            this.sprite.attr({
+                x: widgetSize.width / 2,
+                y: widgetSize.height / 2
+            });
+            this.sprite.runAction(cc.sequence(cc.rotateTo(1.0, 10), cc.rotateTo(1.0, -10)).repeatForever());
+
+            if(cc.sys.isNative){
+                var glProgram_state = cc.GLProgramState.getOrCreateWithGLProgram(this.shader);
+                glProgram_state.setUniformFloat("u_threshold", 1.75);
+                glProgram_state.setUniformVec3("u_outlineColor", {x: 0/255, y: 255/255, z: 0/255});
+                this.sprite.setGLProgramState(glProgram_state);
+            }else{
+                this.sprite.shaderProgram = this.shader;
+            }
+
+            this.addChild(this.sprite);
 
             this.scheduleUpdate();
-            this._time = 0;
         }
     },
-    draw:function() {
-        this.shader.use();
-        this.shader.setUniformsForBuiltins();
-
-        //
-        // Uniforms
-        //
-        var frameSize = cc.view.getFrameSize();
-        this.shader.setUniformLocationF32( this.uniformCenter, frameSize.width/2, frameSize.height/2);
-        this.shader.setUniformLocationF32( this.uniformResolution, 255, 255);
-
-        cc.glEnableVertexAttribs( cc.VERTEX_ATTRIB_FLAG_POSITION );
-
-        // Draw fullscreen Square
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.squareVertexPositionBuffer);
-        gl.vertexAttribPointer(cc.VERTEX_ATTRIB_POSITION, 2, gl.FLOAT, false, 0, 0);
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-
-        gl.bindBuffer(gl.ARRAY_BUFFER, null);
-    },
-
     update:function(dt) {
-        this._time += dt;
+        if( 'opengl' in cc.sys.capabilities ) {
+            if(cc.sys.isNative){
+                this.sprite.getGLProgramState().setUniformFloat("u_radius", Math.abs(this.sprite.getRotation() / 500));
+            }else{
+                this.shader.use();
+                this.shader.setUniformLocationWith1f(this.shader.getUniformLocationForName('u_radius'), Math.abs(this.sprite.getRotation() / 500));
+                this.shader.updateUniforms();
+            }
+        }
     },
-    initBuffers:function() {
-
-        //
-        // Square
-        //
-        var squareVertexPositionBuffer = this.squareVertexPositionBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
-        vertices = [
-            255,            255,
-            0,              255,
-            255,            0,
-            0,              0
-        ];
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-        gl.bindBuffer(gl.ARRAY_BUFFER, null);
+    title:function () {
+        return "Shader Outline Effect";
+    },
+    subtitle:function () {
+        return "Should see rotated image with animated outline effect";
     }
+
+    //
+    // Automation
+    //
 });
+
 
 var BlurLayer = cc.Layer.extend({
     bgTex:(null),
@@ -107,10 +122,12 @@ var BlurLayer = cc.Layer.extend({
 
          this.setColor(cc.color(255, 255, 255, 255));
 
-         var layer1 = cc.LayerColor.create(cc.color(0, 0, 0, 128), widgetSize.width, widgetSize.height);
-        layer1.setPosition(cc.p(0, 0));
-        this.addChild(layer1);
+        // var layer1 = cc.LayerColor.create(cc.color(0, 0, 0, 128), widgetSize.width, widgetSize.height);
+        //layer1.setPosition(cc.p(0, 0));
+        //this.addChild(layer1);
 
+        var llll = new ShaderOutlineEffect();
+        this.addChild(llll);
 /*
         this.bgTex = cc.RenderTexture.create(cc.visibleRect.width, cc.visibleRect.height);
         this.bgTex.begin();
