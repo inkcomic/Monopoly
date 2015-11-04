@@ -16,12 +16,12 @@ cc.game.onStart = function(){
 
     //load resources
     Preloader.preload(g_resources, function () {
-        Preloader.preload(g_opengl_resources, function () {
+    //    Preloader.preload(g_opengl_resources, function () {
             Preloader.preload(g_ui, function () {
                 gMainScene = new MainScene();
                 cc.director.runScene(gMainScene);
             }, this);
-        }, this);
+    //    }, this);
     }, this);
 
 

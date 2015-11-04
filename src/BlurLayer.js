@@ -104,23 +104,18 @@ var BlurLayer = cc.Layer.extend({
 
 
         var widgetSize = this.getContentSize();;
-        /*
+
          this.setColor(cc.color(255, 255, 255, 255));
 
          var layer1 = cc.LayerColor.create(cc.color(0, 0, 0, 128), widgetSize.width, widgetSize.height);
         layer1.setPosition(cc.p(0, 0));
         this.addChild(layer1);
-*/
 
+/*
         this.bgTex = cc.RenderTexture.create(cc.visibleRect.width, cc.visibleRect.height);
         this.bgTex.begin();
         cc.director.getRunningScene().visit();
         this.bgTex.end();
-
-
-         //create bulr background
-
-
 
 
         this.createShader(0,0);
@@ -135,7 +130,7 @@ var BlurLayer = cc.Layer.extend({
         this.addChild(shaderNode);
         shaderNode.x = widgetSize.width/2;
         shaderNode.y = widgetSize.height/2;
-
+*/
     },
     onEnter : function () {
         this._super();
