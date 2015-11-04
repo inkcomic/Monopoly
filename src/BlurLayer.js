@@ -35,8 +35,8 @@ var ShaderNode = cc.GLNode.extend({
         this.init();
 
         if( 'opengl' in cc.sys.capabilities ) {
-            this.width = 1024;
-            this.height = 1024;
+            this.width = 255;
+            this.height = 255;
             this.anchorX = 0.5;
             this.anchorY = 0.5;
 
@@ -64,7 +64,7 @@ var ShaderNode = cc.GLNode.extend({
         //
         var frameSize = cc.view.getFrameSize();
         this.shader.setUniformLocationF32( this.uniformCenter, frameSize.width/2, frameSize.height/2);
-        this.shader.setUniformLocationF32( this.uniformResolution, 1024, 1024);
+        this.shader.setUniformLocationF32( this.uniformResolution, 255, 255);
 
         cc.glEnableVertexAttribs( cc.VERTEX_ATTRIB_FLAG_POSITION );
 
@@ -87,9 +87,9 @@ var ShaderNode = cc.GLNode.extend({
         var squareVertexPositionBuffer = this.squareVertexPositionBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
         vertices = [
-            1024,            1024,
-            0,              1024,
-            1024,            0,
+            255,            255,
+            0,              255,
+            255,            0,
             0,              0
         ];
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
@@ -117,7 +117,6 @@ var BlurLayer = cc.Layer.extend({
         cc.director.getRunningScene().visit();
         this.bgTex.end();
 
-
         this.createShader(0,0);
         this.update(0);
 
@@ -125,7 +124,7 @@ var BlurLayer = cc.Layer.extend({
         this.bgTex.setContentSize(widgetSize.width, widgetSize.height);
         this.bgTex.setVisible(true);
         this.addChild(this.bgTex);
-
+*/
         var shaderNode = new ShaderNode("res/Shaders/example_Flower.vsh", "res/Shaders/example_Flower.fsh");
         this.addChild(shaderNode);
         shaderNode.x = widgetSize.width/2;
@@ -142,6 +141,7 @@ var BlurLayer = cc.Layer.extend({
 
                 if( 'opengl' in cc.sys.capabilities ) {
                     this.shader = new cc.GLProgram("res/Shaders/example_Outline.vsh", "res/Shaders/example_Blur.fsh");
+					this.shader.retain();
                     this.shader.addAttribute(cc.ATTRIBUTE_NAME_POSITION, cc.VERTEX_ATTRIB_POSITION);
                     this.shader.addAttribute(cc.ATTRIBUTE_NAME_TEX_COORD, cc.VERTEX_ATTRIB_TEX_COORDS);
                     this.shader.addAttribute(cc.ATTRIBUTE_NAME_COLOR, cc.VERTEX_ATTRIB_COLOR);
