@@ -124,7 +124,7 @@ var BlurLayer = cc.Layer.extend({
         this.bgTex.setContentSize(widgetSize.width, widgetSize.height);
         this.bgTex.setVisible(true);
         this.addChild(this.bgTex);
-*/
+
         var shaderNode = new ShaderNode("res/Shaders/example_Flower.vsh", "res/Shaders/example_Flower.fsh");
         this.addChild(shaderNode);
         shaderNode.x = widgetSize.width/2;
