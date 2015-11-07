@@ -19,6 +19,7 @@
         "src/Regisiter.js",
         "src/MainGame.js",
         "src/GameData.js",
-        "src/BlurLayer.js"
+        "src/BlurLayer.js",
+        "src/GlobalMoneyRank.js"
     ]
 }

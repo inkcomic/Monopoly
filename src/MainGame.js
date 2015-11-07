@@ -38,6 +38,7 @@ var MainGameUI = cc.Layer.extend({
 	btnRecharge:null,
     labelMoney:null,
     btnEverySign:null,
+    btnMoneyRank:null,
     btnBigRecharge:null,
     ctor : function () {
         this._super();
@@ -159,6 +160,29 @@ var MainGameUI = cc.Layer.extend({
             }
         }, this);
         this.addChild(this.btnEverySign);
+
+        if(this.btnMoneyRank!=null){
+            this.removeChild(this.btnMoneyRank);
+            this.btnMoneyRank=null;
+        }
+        // Create the profile button
+        this.btnMoneyRank = new ccui.Button();
+        this.btnMoneyRank.setBright(!isSigned);
+        this.btnMoneyRank.setEnabled(!isSigned);
+        this.btnMoneyRank.setTouchEnabled(!isSigned);
+        this.btnMoneyRank.setTitleText("中国富豪榜");
+        this.btnMoneyRank.setColor(isSigned?cc.color.GRAY:cc.color.YELLOW);
+        this.btnMoneyRank.setTitleFontSize(26);
+        this.btnMoneyRank.x = this.btnProfileName.x +100+ this.btnProfileName.width + this.btnMoneyRank.width;
+        this.btnMoneyRank.y = this.btnEverySign.y - this.btnEverySign.height - this.btnMoneyRank.height;
+        this.btnMoneyRank.addTouchEventListener(function (sender, type) {
+            switch (type) {
+                case ccui.Widget.TOUCH_ENDED:
+                    this.DoGlobalMoneyRank();
+                    break;
+            }
+        }, this);
+        this.addChild(this.btnMoneyRank);
 
         //recharge
         if(this.btnBigRecharge!=null){
@@ -297,6 +321,9 @@ var MainGameUI = cc.Layer.extend({
 
 
         }
-
+    },
+    DoGlobalMoneyRank:function(selector,target){
+        var layer = new GlobalMoneyRank();
+        this.addChild(layer);
     }
 });

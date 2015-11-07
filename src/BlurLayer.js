@@ -111,8 +111,34 @@ var ShaderOutlineEffect = OpenGLTestLayer.extend({
     //
 });
 
-
-var BlurLayer = cc.Layer.extend({
+var ModelLayer = cc.Layer.extend({
+    ctor : function () {
+        this._super();
+        var touchListener = {
+            event: cc.EventListener.TOUCH_ONE_BY_ONE,
+            swallowTouches: true,
+            onTouchBegan: this.onTouchBegan
+        };
+        cc.eventManager.addListener(touchListener, this);
+        this.m_touchListener = touchListener;
+    },
+    onTouchBegan:function(touch, event) {
+        var target = event.getCurrentTarget();
+        if(!target.isVisible() || (!target.isTouchInside(target,touch))){
+            return false;
+        }
+        return true;
+    },
+    isTouchInside: function (owner,touch) {
+        if(!owner || !owner.getParent()){
+            return false;
+        }
+        var touchLocation = touch.getLocation(); // Get the touch position
+        touchLocation = owner.getParent().convertToNodeSpace(touchLocation);
+        return cc.rectContainsPoint(owner.getBoundingBox(), touchLocation);
+    }
+});
+var BlurLayer = ModelLayer.extend({
     bgTex:(null),
     ctor : function () {
         this._super();
@@ -122,12 +148,12 @@ var BlurLayer = cc.Layer.extend({
 
          this.setColor(cc.color(255, 255, 255, 255));
 
-        // var layer1 = cc.LayerColor.create(cc.color(0, 0, 0, 128), widgetSize.width, widgetSize.height);
-        //layer1.setPosition(cc.p(0, 0));
-        //this.addChild(layer1);
+         var layer1 = cc.LayerColor.create(cc.color(0, 0, 0, 196), widgetSize.width, widgetSize.height);
+        layer1.setPosition(cc.p(0, 0));
+        this.addChild(layer1);
 
-        var llll = new ShaderOutlineEffect();
-        this.addChild(llll);
+        //var llll = new ShaderOutlineEffect();
+        //this.addChild(llll);
 /*
         this.bgTex = cc.RenderTexture.create(cc.visibleRect.width, cc.visibleRect.height);
         this.bgTex.begin();
@@ -217,29 +243,6 @@ var OKDialog = BlurLayer.extend({
     btnOK:null,
     ctor : function () {
         this._super(cc.color(255, 255, 255, 255));
-
-        var touchListener = {
-            event: cc.EventListener.TOUCH_ONE_BY_ONE,
-            swallowTouches: true,
-            onTouchBegan: this.onTouchBegan
-        };
-        cc.eventManager.addListener(touchListener, this);
-        this.m_touchListener = touchListener;
-    },
-    onTouchBegan:function(touch, event) {
-        var target = event.getCurrentTarget();
-        if(!target.isVisible() || (!target.isTouchInside(target,touch))){
-            return false;
-        }
-        return true;
-    },
-    isTouchInside: function (owner,touch) {
-        if(!owner || !owner.getParent()){
-            return false;
-        }
-        var touchLocation = touch.getLocation(); // Get the touch position
-        touchLocation = owner.getParent().convertToNodeSpace(touchLocation);
-        return cc.rectContainsPoint(owner.getBoundingBox(), touchLocation);
     },
     create:function(_infoText,_okText,callback){
         var widgetSize = this.getContentSize();
